@@ -50,15 +50,13 @@
     #loader-name {
       font-family: 'Cormorant Garamond', serif; font-size: 18px;
       letter-spacing: .4em; text-transform: uppercase; color: var(--muted);
-      overflow: hidden; white-space: nowrap; width: 0;
-      animation: typeIn 1.2s steps(18,end) .3s forwards;
+      white-space: nowrap; min-height: 1.4em;
     }
     #loader-bar { width: 160px; height: 1px; background: var(--dim); position: relative; overflow: hidden; }
     #loader-bar::after {
       content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
       background: var(--gold); animation: loadBar 1.4s ease forwards .2s;
     }
-    @keyframes typeIn  { to { width: 320px; } }
     @keyframes loadBar { to { left: 0; } }
 
     /* ── Canvas ── */
@@ -79,7 +77,11 @@
       padding: 0 64px 72px;
       position: relative;
     }
-    .hero-left  { padding-bottom: 8px; }
+    .hero-left  {
+      display: flex; flex-direction: column;
+      align-items: flex-start; justify-content: flex-end;
+      padding-bottom: 8px; gap: 24px;
+    }
     .hero-right {
       display: flex; flex-direction: column;
       align-items: flex-end; justify-content: flex-end; gap: 28px;
@@ -111,7 +113,7 @@
       opacity: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
     }
     .hero-photo-inner {
-      position: relative; width: 220px; height: 264px; overflow: hidden;
+      position: relative; width: 280px; height: 360px; overflow: hidden;
     }
     .hero-photo-inner::before {
       content: ''; position: absolute; inset: 0;
@@ -271,7 +273,7 @@
 <div id="cursor-ring"></div>
 
 <div id="loader">
-  <div id="loader-name">Ondřej Opočenský</div>
+  <div id="loader-name"></div>
   <div id="loader-bar"></div>
 </div>
 
@@ -281,16 +283,7 @@
 
   <section id="hero">
     <div class="hero-left">
-      <div class="hero-eyebrow" id="he">Personal &amp; Business · Praha CZ</div>
-      <div class="hero-name" id="hn">
-        <span class="fn">Ondřej</span>
-        <span class="ln">Opočenský</span>
-      </div>
-      <p class="hero-tagline" id="ht">
-        Junior konzultant · analytik · člověk<br>
-        který překračuje hranice oborů.
-      </p>
-      <div class="hero-photo-wrap" id="hphoto" style="align-items:flex-start; margin-top:32px;">
+      <div class="hero-photo-wrap" id="hphoto">
         <div class="hero-photo-inner">
           <img src="img/profile.jpg" alt="Ondřej Opočenský" class="hero-photo"
                onerror="this.parentElement.parentElement.style.display='none'"/>
@@ -300,6 +293,15 @@
       </div>
     </div>
     <div class="hero-right">
+      <div class="hero-eyebrow" id="he">Personal &amp; Business · Praha CZ</div>
+      <div class="hero-name" id="hn">
+        <span class="fn">Ondřej</span>
+        <span class="ln">Opočenský</span>
+      </div>
+      <p class="hero-tagline" id="ht">
+        Junior konzultant · analytik · člověk<br>
+        který překračuje hranice oborů.
+      </p>
       <div class="hero-roles" id="hr">
         <div class="role-item active"><span class="dot"></span>Junior konzultant @ Lidl</div>
         <div class="role-item"><span class="dot"></span>Obchodní analytik</div>
@@ -448,20 +450,31 @@ function animCursor() {
 animCursor();
 
 // ── LOADER ──
-window.addEventListener('load', () => {
+const loaderNameEl = document.getElementById('loader-name');
+const fullName = 'Ondřej Opočenský';
+let charIndex = 0;
+function typeLoader() {
+  if (charIndex <= fullName.length) {
+    loaderNameEl.textContent = fullName.slice(0, charIndex);
+    charIndex++;
+    setTimeout(typeLoader, 75);
+  } else {
+    setTimeout(hideLoader, 500);
+  }
+}
+function hideLoader() {
+  const loader = document.getElementById('loader');
+  loader.style.transition = 'opacity 0.8s ease';
+  loader.style.opacity = '0';
   setTimeout(() => {
-    const loader = document.getElementById('loader');
-    loader.style.transition = 'opacity 0.8s ease';
-    loader.style.opacity = '0';
-    setTimeout(() => {
-      loader.style.display = 'none';
-      const page = document.getElementById('page');
-      page.style.transition = 'opacity 0.6s ease';
-      page.style.opacity = '1';
-      heroAnimate();
-    }, 800);
-  }, 1800);
-});
+    loader.style.display = 'none';
+    const page = document.getElementById('page');
+    page.style.transition = 'opacity 0.6s ease';
+    page.style.opacity = '1';
+    heroAnimate();
+  }, 800);
+}
+window.addEventListener('load', () => setTimeout(typeLoader, 300));
 
 // ── HERO ANIMATE ──
 function heroAnimate() {
