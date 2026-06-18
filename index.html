@@ -560,7 +560,6 @@ const mat = new THREE.ShaderMaterial({
 });
 
 const particles = new THREE.Points(geo, mat);
-scene.add(particles);
 
 const glowGeo = new THREE.SphereGeometry(1.2, 32, 32);
 const glowMat = new THREE.ShaderMaterial({
@@ -577,7 +576,12 @@ const glowMat = new THREE.ShaderMaterial({
   `,
   transparent: true, depthWrite: false, side: THREE.BackSide,
 });
-scene.add(new THREE.Mesh(glowGeo, glowMat));
+const glowMesh = new THREE.Mesh(glowGeo, glowMat);
+
+const sphereGroup = new THREE.Group();
+sphereGroup.add(particles);
+sphereGroup.add(glowMesh);
+scene.add(sphereGroup);
 
 const mouse3D = new THREE.Vector2(0,0);
 document.addEventListener('mousemove', e => {
@@ -602,10 +606,10 @@ function animate() {
   targetRot.x  = mouse3D.y * 0.18;
   currentRot.x += (targetRot.x - currentRot.x) * 0.05;
   currentRot.y += (targetRot.y - currentRot.y) * 0.05;
-  particles.rotation.x = currentRot.x;
-  particles.rotation.y = currentRot.y;
-  particles.position.x = window.innerWidth > 768 ? 2.2 : 0;
-  if (window.innerWidth <= 768) particles.position.y = 1.5;
+  sphereGroup.rotation.x = currentRot.x;
+  sphereGroup.rotation.y = currentRot.y;
+  sphereGroup.position.x = window.innerWidth > 768 ? 2.2 : 0;
+  sphereGroup.position.y = window.innerWidth <= 768 ? 1.5 : 0;
   renderer.render(scene, camera);
 }
 animate();
