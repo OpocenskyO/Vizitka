@@ -51,14 +51,14 @@
       font-family: 'Cormorant Garamond', serif; font-size: 18px;
       letter-spacing: .4em; text-transform: uppercase; color: var(--muted);
       overflow: hidden; white-space: nowrap; width: 0;
-      animation: typeIn 1.2s steps(4,end) .3s forwards;
+      animation: typeIn 1.2s steps(18,end) .3s forwards;
     }
     #loader-bar { width: 160px; height: 1px; background: var(--dim); position: relative; overflow: hidden; }
     #loader-bar::after {
       content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
       background: var(--gold); animation: loadBar 1.4s ease forwards .2s;
     }
-    @keyframes typeIn  { to { width: 80px; } }
+    @keyframes typeIn  { to { width: 320px; } }
     @keyframes loadBar { to { left: 0; } }
 
     /* ── Canvas ── */
@@ -271,7 +271,7 @@
 <div id="cursor-ring"></div>
 
 <div id="loader">
-  <div id="loader-name">O.O.</div>
+  <div id="loader-name">Ondřej Opočenský</div>
   <div id="loader-bar"></div>
 </div>
 
@@ -290,6 +290,14 @@
         Junior konzultant · analytik · člověk<br>
         který překračuje hranice oborů.
       </p>
+      <div class="hero-photo-wrap" id="hphoto" style="align-items:flex-start; margin-top:32px;">
+        <div class="hero-photo-inner">
+          <img src="img/profile.jpg" alt="Ondřej Opočenský" class="hero-photo"
+               onerror="this.parentElement.parentElement.style.display='none'"/>
+          <div class="hero-photo-overlay"></div>
+        </div>
+        <div class="hero-photo-label">Praha · CZ · 2026</div>
+      </div>
     </div>
     <div class="hero-right">
       <div class="hero-roles" id="hr">
@@ -297,14 +305,6 @@
         <div class="role-item"><span class="dot"></span>Obchodní analytik</div>
         <div class="role-item"><span class="dot"></span>Urbanismus &amp; Environment</div>
         <div class="role-item"><span class="dot"></span>Tech nadšenec</div>
-      </div>
-      <div class="hero-photo-wrap" id="hphoto">
-        <div class="hero-photo-inner">
-          <img src="img/profile.jpg" alt="Ondřej Opočenský" class="hero-photo"
-               onerror="this.parentElement.parentElement.style.display='none'"/>
-          <div class="hero-photo-overlay"></div>
-        </div>
-        <div class="hero-photo-label">Praha · CZ · 2026</div>
       </div>
       <div class="hero-cta" id="hc">
         <a class="btn btn-primary" href="mailto:OpocenskyO@seznam.cz">Kontaktovat</a>
