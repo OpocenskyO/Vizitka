@@ -539,9 +539,8 @@ const mat = new THREE.ShaderMaterial({
       pos += dir * mouseInfluence * aRandom;
       float wave = sin(pos.y * 2.2 + uTime * 1.1) * 0.04 * aRandom;
       pos.x += wave; pos.z += wave * 0.5;
-      vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);
-      gl_Position = projectionMatrix * mvPos;
-      gl_PointSize = (1.8 + aRandom * 1.8) * (300.0 / -mvPos.z);
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+      gl_PointSize = (1.8 + aRandom * 1.8) * (3.0 / -gl_Position.z);
     }
   `,
   fragmentShader: `
