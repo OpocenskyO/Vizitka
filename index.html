@@ -312,6 +312,35 @@
 </head>
 <body>
 
+<!-- PASSWORD GATE -->
+<div id="gate" style="
+  position:fixed;inset:0;background:#080808;z-index:99999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;
+">
+  <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(28px,5vw,48px);font-weight:300;letter-spacing:.05em;color:#ede8df;">
+    O.<em style="font-style:italic;color:#c9a96e">O.</em>
+  </div>
+  <div style="width:1px;height:48px;background:#2a2520;position:relative;overflow:hidden;">
+    <div id="gate-line" style="position:absolute;top:-100%;width:100%;height:50%;background:#c9a96e;animation:gline 1.8s ease-in-out infinite;"></div>
+  </div>
+  <style>@keyframes gline{0%{top:-50%}100%{top:150%}}</style>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+    <input id="gate-input" type="password" placeholder="Přístupový kód"
+      autocomplete="off" style="
+        background:transparent;border:none;border-bottom:1px solid #2a2520;
+        color:#ede8df;font-family:'Space Mono',monospace;font-size:13px;
+        letter-spacing:.3em;text-align:center;padding:12px 0;width:200px;
+        outline:none;transition:border-color .3s;
+      "
+      onfocus="this.style.borderColor='#c9a96e'"
+      onblur="this.style.borderColor='#2a2520'"
+    />
+    <div id="gate-err" style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.2em;color:#c0392b;opacity:0;transition:opacity .3s;">
+      NESPRÁVNÝ KÓD
+    </div>
+  </div>
+</div>
+
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
 
@@ -585,6 +614,38 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
+// ── PASSWORD GATE ──
+(async function() {
+  const HASH = '3a8abd302db1d3c1dfc7ca9019f64d907915aafb063d978a0de6e3c39af2c60a';
+  async function sha256(msg) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+  const gate = document.getElementById('gate');
+  const input = document.getElementById('gate-input');
+  const err = document.getElementById('gate-err');
+
+  if (sessionStorage.getItem('gx') === HASH) {
+    gate.style.display = 'none'; return;
+  }
+
+  async function check() {
+    const h = await sha256(input.value);
+    if (h === HASH) {
+      sessionStorage.setItem('gx', HASH);
+      gate.style.transition = 'opacity .6s ease';
+      gate.style.opacity = '0';
+      setTimeout(() => gate.style.display = 'none', 600);
+    } else {
+      err.style.opacity = '1';
+      input.value = '';
+      input.style.borderColor = '#c0392b';
+      setTimeout(() => { err.style.opacity = '0'; input.style.borderColor = '#2a2520'; }, 1500);
+    }
+  }
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') check(); });
+})();
+
 // ── CURSOR ──
 const cur  = document.getElementById('cursor');
 const ring = document.getElementById('cursor-ring');
